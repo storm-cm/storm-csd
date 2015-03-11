@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -eu
+
+case "$1" in
+nimbus|supervisor|ui|drpc|logviewer)
+    exec "$CDH_STORM_HOME/bin/storm" "$1"
+    ;;
+*)
+    echo "Unknown service: $1" >&2
+    exit 1
+    ;;
+esac

@@ -1,0 +1,108 @@
+{
+    "name": "STORM",
+    "label": "storm",
+    "description": "Distributed realtime computation system",
+    "version": "0.1",
+    "runAs": {
+        "user": "cm-storm",
+        "group": "cm-storm"
+    },
+    "icon": "images/storm.png",
+    "parcel": {
+        "requiredTags": ["storm"]
+    },
+    "gateway": {
+        "alternatives": {
+            "name": "storm-conf",
+            "linkRoot", "/etc/storm",
+            "priority": 50
+        }
+    },
+    "serviceDependencies": [
+        {
+            "name": "ZOOKEEPER",
+            "required": true
+        }
+    ],
+    "parameters": [
+        {
+            "name": "java_library_path",
+            "label": "java.library.path",
+            "description": "This value is passed to spawned JVMs (e.g., Nimbus, Supervisor, and Workers) for the java.library.path value.",
+            "type": "path_array",
+            "separator": ":",
+            "pathType": "serviceSpecific"
+        }
+    ],
+    "rolesWithExternalLinks": ["STORM_UI"],
+    "roles": [
+        {
+            "name": "STORM_NIMBUS",
+            "label": "Nimbus",
+            "pluralLabel": "Nimbi",
+            "startRunner": {
+                "program": "scripts/start",
+                "args": ["nimbus"]
+            },
+            "topology": {
+                "maxInstances": 1
+            },
+            "logging": {
+                "dir": "/var/log/storm",
+                "filename": "nimbus.log"
+            }
+        },
+        {
+            "name": "STORM_UI",
+            "label": "User Interface",
+            "pluralLabel": "User Interfaces",
+            "startRunner": {
+                "program": "scripts/start",
+                "args": ["ui"]
+            },
+            "externalLink": {
+                "name": "storm_ui",
+                "label": "Storm UI",
+                "url": "http://${host}:${ui_port}"
+            },
+            "topology": {
+                "maxInstances": 1
+            },
+            "parameters": [
+                {
+                    "name": "ui_port",
+                    "label": "ui.port",
+                    "description": "Storm UI binds to this port.",
+                    "type": "port"
+                }
+            ]
+        },
+        {
+            "name": "STORM_SUPERVISOR",
+            "label": "Supervisor",
+            "pluralLabel": "Supervisors",
+            "startRunner": {
+                "program": "scripts/start",
+                "args": ["supervisor"]
+            }
+        },
+        {
+            "name": "STORM_LOGVIEWER",
+            "label": "Logviewer",
+            "pluralLabel": "Logviewers",
+            "startRunner": {
+                "program": "scripts/start",
+                "args": ["logviewer"]
+            }
+        },
+        {
+            "name": "STORM_DRPC",
+            "label": "Distributed RPC server",
+            "pluralLabel": "Distributed RPC servers",
+            "startRunner": {
+                "program": "scripts/start",
+                "args": ["drpc"]
+            }
+        }
+    ]
+}
