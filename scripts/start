@@ -2,6 +2,9 @@
 
 set -eu
 
+# convert storm.properties to storm.yaml and set STORM_CONF_DIR to point to the
+# directory containing it
+
 case "$1" in
 nimbus|supervisor|ui|drpc|logviewer)
     exec "$CDH_STORM_HOME/bin/storm" "$1"

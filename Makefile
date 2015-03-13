@@ -2,15 +2,23 @@ SHELL := /bin/bash
 
 CSD_VERSION := 0.1$(if $(BUILD_NUMBER),.$(BUILD_NUMBER),-SNAPSHOT)
 
+GROOVY := $(if $(GROOVY_HOME),$(GROOVY_HOME)/bin/groovy,groovy)
 JAVA := $(if $(JAVA_HOME),$(JAVA_HOME)/bin/java,java)
+JAR := $(if $(JAVA_HOME),$(JAVA_HOME)/bin/jar,jar)
 MVN := mvn
 VALIDATOR := cm_ext/validator/target/validator.jar
 WGET := wget -c --no-use-server-timestamps
-JAR := jar
 
-STORM-$(CSD_VERSION).jar: descriptor/service.sdl scripts/start images/storm.png $(VALIDATOR)
-	$(JAVA) -jar $(VALIDATOR) -s $(filter %.sdl,$^)
+STORM-$(CSD_VERSION).jar: descriptor/service.sdl scripts/start images/storm.png aux/storm.yaml $(VALIDATOR)
 	$(JAR) cf $@ $(filter-out $(VALIDATOR),$^)
+
+descriptor/service.sdl: descriptor/service.sdl.in extract_config.groovy stamp-storm
+	$(GROOVY) $(filter %.groovy,$^) < storm/storm-core/src/jvm/backtype/storm/Config.java > $@
+	if ! $(JAVA) -jar $(VALIDATOR) -s $@; then mv $@ $@.tmp; exit 1; fi
+
+stamp-storm:
+	git clone -b v0.9.3 https://github.com/apache/storm
+	touch $@
 
 $(VALIDATOR): stamp-cm_ext
 	cd cm_ext && $(MVN) -pl validator package
@@ -21,6 +29,6 @@ stamp-cm_ext:
 
 .PHONY: clean
 clean:
-	rm -rf stamp-* STORM-$(CSD_VERSION).jar cm_ext
+	rm -rf stamp-* *.jar *.tmp aux/storm.yaml aux/storm.yaml.tmp cm_ext storm
 
 .DEFAULT_GOAL := STORM-$(CSD_VERSION).jar

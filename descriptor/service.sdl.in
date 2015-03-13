@@ -1,0 +1,237 @@
+{
+    "name": "STORM",
+    "label": "Storm",
+    "description": "Distributed realtime computation system",
+    "version": "0.1",
+    "runAs": {
+        "user": "cm-storm",
+        "group": "cm-storm"
+    },
+    "icon": "images/storm.png",
+    "inExpressWizard": true,
+    "parcel": {
+        "requiredTags": ["storm"]
+    },
+    "gateway": {
+        "alternatives": {
+            "name": "storm-conf",
+            "linkRoot": "/etc/storm"
+        },
+        "configWriter": {
+            "generators": [
+                {
+                    "filename": "storm-conf/storm.properties",
+                    "configFormat": "properties"
+                }
+            ],
+            "peerConfigGenerators": [
+                {
+                    "filename": "storm-conf/nimbus.list",
+                    "params": ["storm_storm_local_dir"], // it seems that if this is not set a NPE is thrown by the server when writing out configs
+                    "roleName": "NIMBUS",
+                }
+            ],
+            "auxConfigGenerators": [
+                {
+                    "filename": "storm-conf/storm.yaml",
+                    "sourceFilename": "aux/storm.yaml"
+                }
+            ]
+        }
+    },
+    "inExpressWizard": true,
+    "serviceDependencies": [
+        {
+            "name": "ZOOKEEPER",
+            "required": true
+        }
+    ],
+    "rolesWithExternalLinks": ["UI", "LOGVIEWER"],
+    "roles": [
+        {
+            "name": "NIMBUS",
+            "label": "Nimbus",
+            "pluralLabel": "Nimbi",
+            "startRunner": {
+                "program": "scripts/start",
+                "args": ["nimbus"]
+            },
+            "topology": {
+                "maxInstances": 1
+            },
+            "logging": {
+                "dir": "/var/log/storm",
+                "filename": "nimbus.log"
+            },
+            "configWriter": {
+                "generators": [
+                    {
+                        "filename": "storm.properties",
+                        "configFormat": "properties"
+                    }
+                ],
+                "peerConfigGenerators": [
+                    {
+                        "filename": "nimbus.list",
+                        "params": ["storm_storm_local_dir"],
+                        "roleName": "NIMBUS",
+                    }
+                ],
+                "auxConfigGenerators": [
+                    {
+                        "filename": "storm.yaml",
+                        "sourceFilename": "aux/storm.yaml"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "UI",
+            "label": "User Interface",
+            "pluralLabel": "User Interfaces",
+            "startRunner": {
+                "program": "scripts/start",
+                "args": ["ui"]
+            },
+            "externalLink": {
+                "name": "storm_ui",
+                "label": "Storm UI",
+                "url": "http://${host}:${storm_ui_port}"
+            },
+            "topology": {
+                "minInstances": 0,
+                "maxInstances": 1
+            },
+            "configWriter": {
+                "generators": [
+                    {
+                        "filename": "storm.properties",
+                        "configFormat": "properties"
+                    }
+                ],
+                "peerConfigGenerators": [
+                    {
+                        "filename": "nimbus.list",
+                        "params": ["storm_storm_local_dir"],
+                        "roleName": "NIMBUS",
+                    }
+                ],
+                "auxConfigGenerators": [
+                    {
+                        "filename": "storm.yaml",
+                        "sourceFilename": "aux/storm.yaml"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "SUPERVISOR",
+            "label": "Supervisor",
+            "pluralLabel": "Supervisors",
+            "startRunner": {
+                "program": "scripts/start",
+                "args": ["supervisor"]
+            },
+            "logging": {
+                "dir": "/var/log/storm",
+                "filename": "supervisor.log"
+            },
+            "configWriter": {
+                "generators": [
+                    {
+                        "filename": "storm.properties",
+                        "configFormat": "properties"
+                    }
+                ],
+                "peerConfigGenerators": [
+                    {
+                        "filename": "nimbus.list",
+                        "params": ["storm_storm_local_dir"],
+                        "roleName": "NIMBUS",
+                    }
+                ],
+                "auxConfigGenerators": [
+                    {
+                        "filename": "storm.yaml",
+                        "sourceFilename": "aux/storm.yaml"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "LOGVIEWER",
+            "label": "Logviewer",
+            "pluralLabel": "Logviewers",
+            "startRunner": {
+                "program": "scripts/start",
+                "args": ["logviewer"]
+            },
+            "externalLink": {
+                "name": "storm_ui",
+                "label": "Storm UI",
+                "url": "http://${host}:${storm_logviewer_port}"
+            },
+            "topology": {
+                "minInstances": 0
+            },
+            "configWriter": {
+                "generators": [
+                    {
+                        "filename": "storm.properties",
+                        "configFormat": "properties"
+                    }
+                ],
+                "peerConfigGenerators": [
+                    {
+                        "filename": "nimbus.list",
+                        "params": ["storm_storm_local_dir"],
+                        "roleName": "NIMBUS",
+                    }
+                ],
+                "auxConfigGenerators": [
+                    {
+                        "filename": "storm.yaml",
+                        "sourceFilename": "aux/storm.yaml"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "DRPC",
+            "label": "Distributed RPC server",
+            "pluralLabel": "Distributed RPC servers",
+            "startRunner": {
+                "program": "scripts/start",
+                "args": ["drpc"]
+            },
+            "topology": {
+                "minInstances": 0
+            },
+            "logging": {
+                "dir": "/var/log/storm",
+                "filename": "drpc.log"
+            },
+            "configWriter": {
+                "generators": [
+                    {
+                        "filename": "storm.properties",
+                        "configFormat": "properties"
+                    }
+                ],
+                "peerConfigGenerators": [
+                    {
+                        "filename": "nimbus.list",
+                        "params": ["storm_storm_local_dir"],
+                        "roleName": "NIMBUS",
+                    }
+                ],
+                "auxConfigGenerators": [
+                    {
+                        "filename": "storm.yaml",
+                        "sourceFilename": "aux/storm.yaml"
+                    }
+                ]
+            }
+        }
+    ]
+}

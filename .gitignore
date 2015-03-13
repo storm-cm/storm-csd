@@ -1,1 +1,5 @@
 *.jar
+/cm_ext/
+/storm/
+/descriptor/service.sdl
+stamp-*
