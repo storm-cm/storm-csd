@@ -2,10 +2,11 @@
 
 set -eux
 
-source="$1/storm.properties"
-nimbus_list="$1/nimbus.list"
-target="$1/storm.yaml"
-orig="$1/storm.yaml.orig"
+source=storm.properties
+nimbus_list=nimbus.list
+target=storm.yaml
+orig=.storm.yaml.orig
+stamp=.stamp-config
 
 function properties_yaml {
     while read line; do
@@ -34,15 +35,21 @@ function properties_yaml {
 }
 
 function zookeeper_yaml {
-    if [[ -z ${ZK_QUORUM:-} ]]; then
-        return
-    fi
-
     echo 'storm.zookeeper.servers:'
+    local x host port oldport=
     for x in $ZK_QUORUM; do
         # XXX is this space separated?
-        echo " - $x"
+        host=$(cut -d : -f 1 <<< "$x")
+        port=$(cut -d : -f 2 <<< "$x")
+        echo " - $host"
+        if [[ -n $oldport && $port != $oldport ]]; then
+            echo "Zookeeper ensemble must all use the same port: $ZK_QUORUM" >&2
+            return 1
+        fi
+        oldport=$port
     done
+
+    echo "storm.zookeeper.port: $port"
 }
 
 function nimbus_yaml {
@@ -60,16 +67,17 @@ function to_yaml {
     nimbus_yaml
 }
 
-# This will contain any safety-valve overrides written out by CM. In case the
-# start script is run multiple times, we only want to move this file aside the
-# first time, as in subsequent launches it will already have been populated.
-if [ ! -e "$orig" ]; then
-    mv "$target" "$orig"
+# Operate idempotently
+if [[ -f "$stamp" ]]; then
+    exit 0
 fi
 
+mv "$target" "$orig"
 to_yaml > "$target"
 cat "$orig" >> "$target"
 
 printf $'#\n# storm.yaml follows:\n#\n'
 cat "$target"
 printf $'#\n#\n#\n'
+
+touch "$stamp"

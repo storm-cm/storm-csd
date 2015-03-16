@@ -41,7 +41,6 @@
         },
         "scriptRunner": {
             "program": "scripts/config",
-            "args": ["storm-conf"]
         }
     },
     "inExpressWizard": true,

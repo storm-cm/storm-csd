@@ -4,7 +4,7 @@ set -eux
 
 export STORM_CONF_DIR="$PWD"
 
-bash scripts/config "$STORM_CONF_DIR"
+bash scripts/config
 
 case "$1" in
 nimbus|supervisor|ui|drpc|logviewer)

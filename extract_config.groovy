@@ -25,6 +25,7 @@ class Param {
 
         switch(key) {
         case 'storm.id': // makes no sense in storm.yaml
+        case 'topology.name': // makes no sense in storm.yaml
         case 'nimbus.host': // determined by service topology in CM
         case 'storm.zookeeper.servers': // available in ZK_QUORUM environment variable
         case 'storm.zookeeper.port': // available in ZK_QUORUM environment variable
@@ -61,6 +62,10 @@ class Param {
         case 'ConfigValidation.PowerOf2Validator':
             result['type'] = 'long'
             break
+        case 'Map.class':
+            result['type'] = 'string_array'
+            result['separator'] = ','
+            break
         default:
             System.err.println "Ignoring unknown type for ${this}"
             return null
@@ -69,6 +74,8 @@ class Param {
         switch(key) {
         case ~/.*\.port/:
             result['type'] = 'port'
+            result['required'] = 'true'
+            result['configurableInWizard'] = 'true'
             break
         case ~/.*\.secs/:
             result['unit'] = 'seconds'
@@ -96,11 +103,17 @@ class Param {
         case 'ui.port': // default required because of externalLink in SDL file
             result['default'] = 8080
             break
+        case 'drpc.port':
+            result['default'] = 3772
+            break
+        case 'drpc.invocations.port':
+            result['default'] = 3773
+            break
         case 'java.library.path':
             result['type'] = 'path_array'
             result['separator'] = ':'
             result['pathType'] = 'serviceSpecific'
-            result['default'] = '/opt/cloudera/parcels/CDH/lib/hadoop/lib/native'
+            result['default'] = ['/opt/cloudera/parcels/CDH/lib/hadoop/lib/native']
             break
         case 'storm.local.dir':
             result['type'] = 'path'
@@ -108,6 +121,7 @@ class Param {
             result['mode'] = '0700'
             result['required'] = true
             result['default'] = '/var/lib/storm'
+            result['configurableInWizard'] = true
             break
         case 'topology.classpath':
             result['type'] = 'path_array'
