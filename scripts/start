@@ -1,11 +1,11 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 # convert storm.properties to storm.yaml and set STORM_CONF_DIR to point to the
 # directory containing it
 
-scripts/config storm.yaml
+bash scripts/config "$PWD"
 
 case "$1" in
 nimbus|supervisor|ui|drpc|logviewer)

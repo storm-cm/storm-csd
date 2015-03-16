@@ -1,21 +1,19 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
-source=storm.properties
-nimbus_list=nimbus.list
-target="$1"
+source="$1/storm.properties"
+nimbus_list="$1/nimbus.list"
+target="$1/storm.yaml"
 
-input=$(< "$source")
-
-function to_yaml {
+function properties_yaml {
     while read line; do
         if [[ ! $line =~ ([a-z0-9._]+)=(.*) ]]; then
             echo "Ignoring line: $line" >&2
             continue
         fi
-        k=${BASH_REMATCH[1]}
-        v=${BASH_REMATCH[2]}
+        k="${BASH_REMATCH[1]}"
+        v="${BASH_REMATCH[2]}"
 
         case "$k" in
         log_dir)
@@ -23,14 +21,37 @@ function to_yaml {
             ;;
         esac
 
-        printf "$k: $v\n"
-    done <(cat "$source")
+        printf '%s: %s\n' "$k" "$v"
+    done < "$source"
 }
 
-function extra_yaml {
+function zookeeper_yaml {
+    if [[ -z ${ZK_QUORUM:-} ]]; then
+        return
+    fi
+
+    echo 'storm.zookeeper.servers:'
+    for x in $ZK_QUORUM; do
+        # XXX is this space separated?
+        echo " - $x"
+    done
+}
+
+function nimbus_yaml {
+    nimbus=$(cut -d : -f 1 < "$nimbus_list" | head -n 1)
+    if [[ -z $nimbus ]]; then
+        echo "Could not determine nimbus.host" >&2
+        return 1
+    fi
+    echo "nimbus.host: $nimbus"
+}
+
+function to_yaml {
+    properties_yaml
+    zookeeper_yaml
+    nimbus_yaml
 }
 
 to_yaml > "${target}.tmp"
-extra_yaml >> "${target}.tmp"
-cat "$source" >> "${target}.tmp"
+cat "$target" >> "${target}.tmp"
 mv "${target}.tmp" "$target"
