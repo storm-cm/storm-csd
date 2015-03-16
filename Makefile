@@ -9,10 +9,10 @@ MVN := mvn
 VALIDATOR := cm_ext/validator/target/validator.jar
 WGET := wget -c --no-use-server-timestamps
 
-STORM-$(CSD_VERSION).jar: descriptor/service.sdl scripts/start scripts/config images/storm.png aux/storm_env.ini $(VALIDATOR)
-	$(JAR) cf $@ $(filter-out $(VALIDATOR),$^)
+STORM-$(CSD_VERSION).jar: descriptor/service.sdl scripts/start scripts/config images/storm.png aux/storm_env.ini
+	$(JAR) cf $@ $^
 
-descriptor/service.sdl: descriptor/service.sdl.in extract_config.groovy stamp-storm
+descriptor/service.sdl: descriptor/service.sdl.in extract_config.groovy stamp-storm $(VALIDATOR)
 	$(GROOVY) $(filter %.groovy,$^) < storm/storm-core/src/jvm/backtype/storm/Config.java > $@
 	if ! $(JAVA) -jar $(VALIDATOR) -s $@; then mv $@ $@.tmp; exit 1; fi
 
