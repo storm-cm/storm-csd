@@ -1,0 +1,3 @@
+put config directly into storm.yaml -- no more storm.properties. pass params through as env vars? would have to be auto generated
+
+storm.local.dir is not being created by CM...
