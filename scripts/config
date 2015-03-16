@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -eu
+
+source=storm.properties
+nimbus_list=nimbus.list
+target="$1"
+
+input=$(< "$source")
+
+function to_yaml {
+    while read line; do
+        if [[ ! $line =~ ([a-z0-9._]+)=(.*) ]]; then
+            echo "Ignoring line: $line" >&2
+            continue
+        fi
+        k=${BASH_REMATCH[1]}
+        v=${BASH_REMATCH[2]}
+
+        case "$k" in
+        log_dir)
+            k=storm.log.dir
+            ;;
+        esac
+
+        printf "$k: $v\n"
+    done <(cat "$source")
+}
+
+function extra_yaml {
+}
+
+to_yaml > "${target}.tmp"
+extra_yaml >> "${target}.tmp"
+cat "$source" >> "${target}.tmp"
+mv "${target}.tmp" "$target"

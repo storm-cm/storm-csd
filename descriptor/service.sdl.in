@@ -38,6 +38,10 @@
                     "sourceFilename": "aux/storm.yaml"
                 }
             ]
+        },
+        "scriptRunner": {
+            "program": "scripts/config",
+            "args": ["storm-conf/storm.yaml"]
         }
     },
     "inExpressWizard": true,
