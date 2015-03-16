@@ -5,6 +5,7 @@ set -eux
 source="$1/storm.properties"
 nimbus_list="$1/nimbus.list"
 target="$1/storm.yaml"
+orig="$1/storm.yaml.orig"
 
 function properties_yaml {
     while read line; do
@@ -59,9 +60,15 @@ function to_yaml {
     nimbus_yaml
 }
 
-to_yaml > "${target}.tmp"
-cat "$target" >> "${target}.tmp"
-mv "${target}.tmp" "$target"
+# This will contain any safety-valve overrides written out by CM. In case the
+# start script is run multiple times, we only want to move this file aside the
+# first time, as in subsequent launches it will already have been populated.
+if [ ! -e "$orig" ]; then
+    mv "$target" "$orig"
+fi
+
+to_yaml > "$target"
+cat "$orig" >> "$target"
 
 printf $'#\n# storm.yaml follows:\n#\n'
 cat "$target"
