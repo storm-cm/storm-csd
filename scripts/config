@@ -14,15 +14,15 @@ function properties_yaml {
             echo "Ignoring line: $line" >&2
             continue
         fi
-        k="${BASH_REMATCH[1]}"
-        v="${BASH_REMATCH[2]}"
+        local k="${BASH_REMATCH[1]}"
+        local v="${BASH_REMATCH[2]}"
 
         case "$k" in
         log_dir)
             k=storm.log.dir
             ;;
         supervisor.slots.ports)
-            ports=$(tr , ' ' <<< "$v")
+            local ports=$(tr , ' ' <<< "$v")
             v=$'\n'
             for port in $ports; do
                 v+=" - $port"$'\n'
@@ -39,8 +39,7 @@ function zookeeper_yaml {
     local x host port oldport=
     for x in $ZK_QUORUM; do
         # XXX is this space separated?
-        host=$(cut -d : -f 1 <<< "$x")
-        port=$(cut -d : -f 2 <<< "$x")
+        read host port < <(tr : ' ' <<< "$x")
         echo " - $host"
         if [[ -n $oldport && $port != $oldport ]]; then
             echo "Zookeeper ensemble must all use the same port: $ZK_QUORUM" >&2
