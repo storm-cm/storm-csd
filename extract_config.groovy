@@ -74,8 +74,8 @@ class Param {
         switch(key) {
         case ~/.*\.port/:
             result['type'] = 'port'
-            result['required'] = 'true'
-            result['configurableInWizard'] = 'true'
+            result['required'] = true
+            result['configurableInWizard'] = true
             break
         case ~/.*\.secs/:
             result['unit'] = 'seconds'
@@ -135,19 +135,19 @@ class Param {
         if (result['type'] == 'boolean') {
             switch(key) {
             case 'nimbus.reassign':
-                result['default'] = 'true'
+                result['default'] = true
                 break
             case 'topology.enable.message.timeouts':
-                result['default'] = 'true'
+                result['default'] = true
                 break
             case 'topology.skip.missing.kryo.registrations':
-                result['default'] = 'false'
+                result['default'] = false
                 break
             case 'topology.fall.back.on.java.serialization':
-                result['default'] = 'true'
+                result['default'] = true
                 break
             case 'topology.debug':
-                result['default'] = 'false'
+                result['default'] = false
                 break
             default:
                 throw new RuntimeException("Unknown default for boolean value: ${key}")
