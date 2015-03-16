@@ -54,7 +54,7 @@
         }
     ],
     "parameters": [],
-    "rolesWithExternalLinks": ["UI", "LOGVIEWER"],
+    "rolesWithExternalLinks": ["UI"],
     "roles": [
         {
             "name": "NIMBUS",
@@ -184,11 +184,6 @@
             "startRunner": {
                 "program": "scripts/start",
                 "args": ["logviewer"]
-            },
-            "externalLink": {
-                "name": "storm_ui",
-                "label": "Storm UI",
-                "url": "http://${host}:${storm_logviewer_port}"
             },
             "topology": {
                 "minInstances": 0
