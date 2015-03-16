@@ -2,14 +2,12 @@
 
 set -eux
 
-# convert storm.properties to storm.yaml and set STORM_CONF_DIR to point to the
-# directory containing it
+export STORM_CONF_DIR="$PWD"
 
-bash scripts/config "$PWD"
+bash scripts/config "$STORM_CONF_DIR"
 
 case "$1" in
 nimbus|supervisor|ui|drpc|logviewer)
-    export STORM_CONF_DIR="$PWD"
     exec "$CDH_STORM_HOME/bin/storm" "$1"
     ;;
 *)

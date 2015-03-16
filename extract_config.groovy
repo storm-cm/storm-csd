@@ -34,7 +34,6 @@ class Param {
         case 'storm.local.mode.zmq': // ignored in distributed mode
         case 'storm.local.hostname': // makes no sense to set this service-wide
         case 'supervisor.enable': // only used by storm-core unit tests
-        case 'topology.debug': // makes no sense in storm.yaml
         case 'dev.zookeeper.path': // only used in development
             return null
         }
@@ -85,7 +84,7 @@ class Param {
             break
         }
 
-        // XXX fetch from default.yaml
+        // XXX fetch defaults from default.yaml
         switch(key) {
         case 'nimbus.thrift.port':
             result['required'] = true // referenced by peerConfigGenerators, which cause a nasty NullPointerException in the Cloudera Manager server if the referenced parameter is not set
@@ -98,11 +97,22 @@ class Param {
             result['default'] = 8080
             break
         case 'java.library.path':
+            result['type'] = 'path_array'
+            result['separator'] = ':'
+            result['pathType'] = 'serviceSpecific'
             result['default'] = '/opt/cloudera/parcels/CDH/lib/hadoop/lib/native'
             break
         case 'storm.local.dir':
+            result['type'] = 'path'
+            result['pathType'] = 'localDataDir'
+            result['mode'] = '0700'
             result['required'] = true
             result['default'] = '/var/lib/storm'
+            break
+        case 'topology.classpath':
+            result['type'] = 'path_array'
+            result['separator'] = ':'
+            result['pathType'] = 'serviceSpecific'
             break
         }
 
@@ -121,6 +131,9 @@ class Param {
                 break
             case 'topology.fall.back.on.java.serialization':
                 result['default'] = 'true'
+                break
+            case 'topology.debug':
+                result['default'] = 'false'
                 break
             default:
                 throw new RuntimeException("Unknown default for boolean value: ${key}")
