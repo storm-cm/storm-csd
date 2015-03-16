@@ -86,6 +86,10 @@ class Param {
 
         // XXX fetch from default.yaml
         switch(key) {
+        case 'nimbus.thrift.port':
+            result['required'] = true // referenced by peerConfigGenerators, which cause a nasty NullPointerException in the Cloudera Manager server if the referenced parameter is not set
+            result['default'] = 6627
+            break
         case 'logviewer.port': // default required because of externalLink in SDL file
             result['default'] = 8000
             break
