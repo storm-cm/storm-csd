@@ -15,7 +15,8 @@
     "gateway": {
         "alternatives": {
             "name": "storm-conf",
-            "linkRoot": "/etc/storm"
+            "linkRoot": "/etc/storm",
+            "priority": 50
         },
         "configWriter": {
             "generators": [
