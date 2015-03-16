@@ -19,6 +19,13 @@ function properties_yaml {
         log_dir)
             k=storm.log.dir
             ;;
+        supervisor.slots.ports)
+            ports=$(tr , ' ' <<< "$v")
+            v=$'\n'
+            for port in $ports; do
+                v+=" - $port"$'\n'
+            done
+            ;;
         esac
 
         printf '%s: %s\n' "$k" "$v"
@@ -55,3 +62,7 @@ function to_yaml {
 to_yaml > "${target}.tmp"
 cat "$target" >> "${target}.tmp"
 mv "${target}.tmp" "$target"
+
+printf $'#\n# storm.yaml follows:\n#\n'
+cat "$target"
+printf $'#\n#\n#\n'

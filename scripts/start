@@ -9,6 +9,7 @@ bash scripts/config "$PWD"
 
 case "$1" in
 nimbus|supervisor|ui|drpc|logviewer)
+    export STORM_CONF_DIR="$PWD"
     exec "$CDH_STORM_HOME/bin/storm" "$1"
     ;;
 *)

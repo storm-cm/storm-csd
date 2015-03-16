@@ -34,6 +34,7 @@ class Param {
         case 'storm.local.mode.zmq': // ignored in distributed mode
         case 'storm.local.hostname': // makes no sense to set this service-wide
         case 'supervisor.enable': // only used by storm-core unit tests
+        case 'topology.debug': // makes no sense in storm.yaml
         case 'dev.zookeeper.path': // only used in development
             return null
         }
@@ -99,6 +100,10 @@ class Param {
         case 'java.library.path':
             result['default'] = '/opt/cloudera/parcels/CDH/lib/hadoop/lib/native'
             break
+        case 'storm.local.dir':
+            result['required'] = true
+            result['default'] = '/var/lib/storm'
+            break
         }
 
         // CM emits 'false' for all booleans that don't have a value specified!
@@ -108,14 +113,8 @@ class Param {
             case 'nimbus.reassign':
                 result['default'] = 'true'
                 break
-            case 'supervisor.enable':
-                result['default'] = 'true'
-                break
             case 'topology.enable.message.timeouts':
                 result['default'] = 'true'
-                break
-            case 'topology.debug':
-                result['default'] = 'false'
                 break
             case 'topology.skip.missing.kryo.registrations':
                 result['default'] = 'false'
