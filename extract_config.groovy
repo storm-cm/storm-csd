@@ -101,6 +101,33 @@ class Param {
             break
         }
 
+        // CM emits 'false' for all booleans that don't have a value specified!
+        // XXX fetch from default.yaml--then this can disappear
+        if (result['type'] == 'boolean') {
+            switch(key) {
+            case 'nimbus.reassign':
+                result['default'] = 'true'
+                break
+            case 'supervisor.enable':
+                result['default'] = 'true'
+                break
+            case 'topology.enable.message.timeouts':
+                result['default'] = 'true'
+                break
+            case 'topology.debug':
+                result['default'] = 'false'
+                break
+            case 'topology.skip.missing.kryo.registrations':
+                result['default'] = 'false'
+                break
+            case 'topology.fall.back.on.java.serialization':
+                result['default'] = 'true'
+                break
+            default:
+                throw new RuntimeException("Unknown default for boolean value: ${key}")
+            }
+        }
+
         return result
     }
 }
