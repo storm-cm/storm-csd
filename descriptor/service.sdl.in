@@ -28,7 +28,7 @@
             "peerConfigGenerators": [
                 {
                     "filename": "storm-conf/nimbus.list",
-                    "params": ["storm_storm_local_dir"], // it seems that if this is not set a NPE is thrown by the server when writing out configs
+                    "params": ["storm_nimbus_thrift_port"],
                     "roleName": "NIMBUS",
                 }
             ],
@@ -74,7 +74,7 @@
                 "peerConfigGenerators": [
                     {
                         "filename": "nimbus.list",
-                        "params": ["storm_storm_local_dir"],
+                        "params": ["storm_nimbus_thrift_port"],
                         "roleName": "NIMBUS",
                     }
                 ],
@@ -113,7 +113,7 @@
                 "peerConfigGenerators": [
                     {
                         "filename": "nimbus.list",
-                        "params": ["storm_storm_local_dir"],
+                        "params": ["storm_nimbus_thrift_port"],
                         "roleName": "NIMBUS",
                     }
                 ],
@@ -147,7 +147,7 @@
                 "peerConfigGenerators": [
                     {
                         "filename": "nimbus.list",
-                        "params": ["storm_storm_local_dir"],
+                        "params": ["storm_nimbus_thrift_port"],
                         "roleName": "NIMBUS",
                     }
                 ],
@@ -185,7 +185,7 @@
                 "peerConfigGenerators": [
                     {
                         "filename": "nimbus.list",
-                        "params": ["storm_storm_local_dir"],
+                        "params": ["storm_nimbus_thrift_port"],
                         "roleName": "NIMBUS",
                     }
                 ],
@@ -222,7 +222,7 @@
                 "peerConfigGenerators": [
                     {
                         "filename": "nimbus.list",
-                        "params": ["storm_storm_local_dir"],
+                        "params": ["storm_nimbus_thrift_port"],
                         "roleName": "NIMBUS",
                     }
                 ],
