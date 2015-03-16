@@ -143,7 +143,7 @@ knownParams.each {
 
 def js = new JsonSlurper()
 def sd = js.parse(new File('descriptor/service.sdl.in'))
-sd['parameters'] = params
+sd['parameters'] += params
 
 def jo = new JsonOutput()
 System.out << JsonOutput.prettyPrint(jo.toJson(sd))

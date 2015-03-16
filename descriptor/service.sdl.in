@@ -47,6 +47,7 @@
             "required": true
         }
     ],
+    "parameters": [],
     "rolesWithExternalLinks": ["UI", "LOGVIEWER"],
     "roles": [
         {
