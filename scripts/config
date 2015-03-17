@@ -3,7 +3,6 @@
 set -eux
 
 source=storm.properties
-nimbus_list=nimbus.list
 target=storm.yaml
 orig=.storm.yaml.orig
 stamp=.stamp-config
@@ -49,22 +48,48 @@ function zookeeper_yaml {
     echo "storm.zookeeper.port: $port"
 }
 
-function nimbus_yaml {
-    local nimbus=
-    while read line; do
-        if [[ -n $nimbus ]]; then
-            echo 'You have more than one Nimbus... this should not be possible!' >&2
+function role_yaml {
+    local role="$1"
+    local key="$2"
+    local limit="$3"
+
+    if [[ ! -s ${1}.list && $limit = multi_opt ]]; then
+        return 0
+    fi
+    read -a instances < "${1}.list"
+
+    if [[ ${#instances[@]} -eq 0 ]]; then
+        echo "0 instances of role $role found... this should not be possible!" >&2
+        return 1
+    fi
+
+    case $limit in
+    single)
+        if [[ ${#instances[@]} -ne 1 ]]; then
+            echo "${#instances[@]} instances of role $role found... this should not be possible!" >&2
             return 1
         fi
-        nimbus=$(cut -d : -f 1 <<< "$line")
-    done < "$nimbus_list"
-    echo "nimbus.host: $nimbus"
+        echo "$key: ${instances[0]%%:*}"
+        ;;
+    multi|multi_opt)
+        echo "$key":
+        local i
+        for i in "${instances[@]}"; do
+            echo " - ${i%%:*}"
+        done
+        ;;
+    *)
+        echo "Should be single|multi|multi_opt: $limit" >&2
+        return 1
+        ;;
+    esac
 }
 
 function to_yaml {
     properties_yaml
     zookeeper_yaml
-    nimbus_yaml
+    role_yaml nimbus nimbus.host single
+    role_yaml drpc drpc.servers multi_opt
 }
 
 # Operate idempotently

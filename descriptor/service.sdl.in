@@ -29,8 +29,14 @@
                 {
                     "filename": "storm-conf/nimbus.list",
                     "params": ["storm_nimbus_thrift_port"],
-                    "roleName": "NIMBUS",
+                    "roleName": "NIMBUS"
+                },
+                {
+                    "filename": "storm-conf/drpc.list",
+                    "params": ["storm_drpc_port"],
+                    "roleName": "DRPC"
                 }
+
             ],
             "auxConfigGenerators": [
                 {
@@ -83,8 +89,14 @@
                     {
                         "filename": "nimbus.list",
                         "params": ["storm_nimbus_thrift_port"],
-                        "roleName": "NIMBUS",
+                        "roleName": "NIMBUS"
+                    },
+                    {
+                        "filename": "drpc.list",
+                        "params": ["storm_drpc_port"],
+                        "roleName": "DRPC"
                     }
+
                 ],
                 "auxConfigGenerators": [
                     {
@@ -130,8 +142,14 @@
                     {
                         "filename": "nimbus.list",
                         "params": ["storm_nimbus_thrift_port"],
-                        "roleName": "NIMBUS",
+                        "roleName": "NIMBUS"
+                    },
+                    {
+                        "filename": "drpc.list",
+                        "params": ["storm_drpc_port"],
+                        "roleName": "DRPC"
                     }
+
                 ],
                 "auxConfigGenerators": [
                     {
@@ -170,8 +188,14 @@
                     {
                         "filename": "nimbus.list",
                         "params": ["storm_nimbus_thrift_port"],
-                        "roleName": "NIMBUS",
+                        "roleName": "NIMBUS"
+                    },
+                    {
+                        "filename": "drpc.list",
+                        "params": ["storm_drpc_port"],
+                        "roleName": "DRPC"
                     }
+
                 ],
                 "auxConfigGenerators": [
                     {
@@ -212,8 +236,14 @@
                     {
                         "filename": "nimbus.list",
                         "params": ["storm_nimbus_thrift_port"],
-                        "roleName": "NIMBUS",
+                        "roleName": "NIMBUS"
+                    },
+                    {
+                        "filename": "drpc.list",
+                        "params": ["storm_drpc_port"],
+                        "roleName": "DRPC"
                     }
+
                 ],
                 "auxConfigGenerators": [
                     {
@@ -254,7 +284,12 @@
                     {
                         "filename": "nimbus.list",
                         "params": ["storm_nimbus_thrift_port"],
-                        "roleName": "NIMBUS",
+                        "roleName": "NIMBUS"
+                    },
+                    {
+                        "filename": "drpc.list",
+                        "params": ["storm_drpc_port"],
+                        "roleName": "DRPC"
                     }
                 ],
                 "auxConfigGenerators": [
