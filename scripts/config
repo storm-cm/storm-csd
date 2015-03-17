@@ -24,8 +24,8 @@ function properties_yaml {
             for port in $ports; do
                 v+=" - $port"$'\n'
             done
-            ;;
             v=${v::-1} # remove trailing newline
+            ;;
         esac
 
         printf '%s: %s\n' "$k" "$v"
