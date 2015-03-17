@@ -8,6 +8,13 @@
         "group": "storm"
     },
     "icon": "images/storm.png",
+    "compatibility": {
+        "generation": 1,
+        "cdhVersion": {
+            "min": 4,
+            "max": 5
+        }
+    },
     "inExpressWizard": true,
     "parcel": {
         "requiredTags": ["storm"]
