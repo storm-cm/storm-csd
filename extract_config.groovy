@@ -1,14 +1,29 @@
-import java.util.regex.Matcher
+@Grapes([
+   @Grab(group='org.yaml', module='snakeyaml', version='1.15')
+])
+
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import org.yaml.snakeyaml.Yaml
+import java.util.regex.Matcher
+
+def parseDefaults() {
+    def yaml = new Yaml()
+    def defaults
+    new File('storm/conf/defaults.yaml').withInputStream {
+        defaults = yaml.load(it)
+    }
+    return defaults
+}
 
 class Param {
     String key
     String type
+    Object default_
     StringBuilder comment
 
     String toString() {
-        return "${key}(${type}, ${comment})"
+        return "${key}(${type}, ${default_}, ${comment})"
     }
 
     def toJson() {
@@ -89,23 +104,13 @@ class Param {
             break
         }
 
-        // XXX fetch defaults from default.yaml
         switch(key) {
         case 'nimbus.thrift.port':
             result['required'] = true // referenced by peerConfigGenerators, which cause a nasty NullPointerException in the Cloudera Manager server if the referenced parameter is not set
             result['default'] = 6627
             break
-        case 'logviewer.port': // default required because of externalLink in SDL file
-            result['default'] = 8000
-            break
         case 'ui.port': // default required because of externalLink in SDL file
             result['default'] = 8080
-            break
-        case 'drpc.port':
-            result['default'] = 3772
-            break
-        case 'drpc.invocations.port':
-            result['default'] = 3773
             break
         case 'java.library.path':
             result['type'] = 'path_array'
@@ -123,23 +128,15 @@ class Param {
             break
         }
 
-        // CM emits 'false' for all booleans that don't have a value specified!
-        // XXX fetch from default.yaml--then this can disappear
-        if (result['type'] == 'boolean') {
-            switch(key) {
-            case 'nimbus.reassign':
-                result['default'] = true
-                break
-            default:
-                throw new RuntimeException("Unknown default for boolean value: ${key}")
-            }
+        if (result.get('default') == null && default_ != null) {
+            result['default'] = default_
         }
 
         return result
     }
 }
 
-def parseParams() {
+def parseParams(def defaults) {
     def result = []
     def p
     System.in.eachLine {
@@ -156,18 +153,20 @@ def parseParams() {
             break
         case ~/.*?public static final String [A-Z_]+\s*=\s*"([^"]+)".*/:
             p.key = Matcher.lastMatcher[0][1]
+            p.default_ = defaults.get(p.key)
             break
         case ~/.*?public static final Object [A-Z_]+?_SCHEMA\s*=\s*([^;]+);.*/:
             p.type = Matcher.lastMatcher[0][1]
-            
+
             result << p
+            p = null
             break
         }
     }
     return result
 }
 
-def knownParams = parseParams()
+def knownParams = parseParams(parseDefaults())
 
 def params = []
 knownParams.each {
