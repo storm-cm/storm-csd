@@ -4,8 +4,8 @@
     "description": "Distributed realtime computation system",
     "version": "0.1",
     "runAs": {
-        "user": "cm-storm",
-        "group": "cm-storm"
+        "user": "storm",
+        "group": "storm"
     },
     "icon": "images/storm.png",
     "inExpressWizard": true,
