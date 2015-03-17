@@ -32,20 +32,22 @@ function properties_yaml {
 }
 
 function zookeeper_yaml {
+    IFS=, read -a ensemble <<< "$ZK_QUORUM"
+
     echo 'storm.zookeeper.servers:'
-    local x host port oldport=
-    for x in $ZK_QUORUM; do
-        # XXX is this space separated?
-        read host port < <(tr : ' ' <<< "$x")
-        echo " - $host"
-        if [[ -n $oldport && $port != $oldport ]]; then
-            echo "Zookeeper ensemble must all use the same port: $ZK_QUORUM" >&2
+    local lastport=
+    local port
+    for server in "${ensemble[@]}"; do
+        echo " - ${server%%:*}"
+        port=${server##*:}
+        if [[ -n $lastport && $port != $lastport ]]; then
+            echo "Each Zookeeper server must use the same port: $ensemble" >&2
             return 1
         fi
-        oldport=$port
+        lastport=$port
     done
 
-    echo "storm.zookeeper.port: $port"
+    echo "storm.zookeeper.port: $lastport"
 }
 
 function role_yaml {
