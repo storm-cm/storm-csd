@@ -25,9 +25,10 @@ function properties_yaml {
                 v+=" - $port"$'\n'
             done
             ;;
+            v=${v::-1} # remove trailing newline
         esac
 
-        printf '%s: %s' "$k" "$v"
+        printf '%s: %s\n' "$k" "$v"
     done < "$source"
 }
 
