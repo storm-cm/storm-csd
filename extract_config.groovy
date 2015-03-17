@@ -40,7 +40,7 @@ class Param {
             return null
         }
 
-        switch (type) {
+        switch(type) {
         case 'String.class':
         case 'ConfigValidation.StringOrStringListValidator': // currently only worker.childopts
             result['type'] = 'string'
