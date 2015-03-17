@@ -60,6 +60,7 @@ class Param {
             result['type'] = 'long'
             break
         case 'Map.class':
+            // XXX conversion from array of 'foo=bar' to yaml map not yet implemented
             result['type'] = 'string_array'
             result['separator'] = ','
             break
