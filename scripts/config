@@ -27,7 +27,7 @@ function properties_yaml {
             ;;
         esac
 
-        printf '%s: %s\n' "$k" "$v"
+        printf '%s: %s' "$k" "$v"
     done < "$source"
 }
 
