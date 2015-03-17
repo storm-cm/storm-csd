@@ -49,14 +49,14 @@ function zookeeper_yaml {
 }
 
 function nimbus_yaml {
-    local nimbus
+    local nimbus=
     while read line; do
         if [[ -n $nimbus ]]; then
             echo 'You have more than one Nimbus... this should not be possible!' >&2
             return 1
         fi
-        nimbus=$(cut -d : -f 1 < "$nimbus_list" | head -n 1)
-    fi
+        nimbus=$(cut -d : -f 1 <<< "$line")
+    done < "$nimbus_list"
     echo "nimbus.host: $nimbus"
 }
 
