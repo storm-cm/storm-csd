@@ -24,8 +24,8 @@ class Param {
         ]
 
         switch(key) {
-        case 'storm.id': // makes no sense in storm.yaml
-        case 'topology.name': // makes no sense in storm.yaml
+        case 'storm.id': // topology-specific config makes no sense in storm.yaml
+        case ~/topology\..*/: // topology-specific config makes no sense in storm.yaml
         case 'nimbus.host': // determined by service topology in CM
         case 'storm.zookeeper.servers': // available in ZK_QUORUM environment variable
         case 'storm.zookeeper.port': // available in ZK_QUORUM environment variable
@@ -41,6 +41,7 @@ class Param {
 
         switch (type) {
         case 'String.class':
+        case 'ConfigValidation.StringOrStringListValidator': // currently only worker.childopts
             result['type'] = 'string'
             break
         case 'Boolean.class':
@@ -52,11 +53,6 @@ class Param {
         case 'ConfigValidation.IntegersValidator':
         case 'ConfigValidation.StringsValidator':
             result['type'] = 'string_array'
-            break
-        case 'ConfigValidation.StringOrStringListValidator':
-            result['type'] = 'string_array'
-            result['separator'] = ':'
-            result['minLength'] = 1
             break
         case 'ConfigValidation.IntegerValidator':
         case 'ConfigValidation.PowerOf2Validator':
@@ -123,11 +119,6 @@ class Param {
             result['default'] = '/var/lib/storm'
             result['configurableInWizard'] = true
             break
-        case 'topology.classpath':
-            result['type'] = 'path_array'
-            result['separator'] = ':'
-            result['pathType'] = 'serviceSpecific'
-            break
         }
 
         // CM emits 'false' for all booleans that don't have a value specified!
@@ -136,18 +127,6 @@ class Param {
             switch(key) {
             case 'nimbus.reassign':
                 result['default'] = true
-                break
-            case 'topology.enable.message.timeouts':
-                result['default'] = true
-                break
-            case 'topology.skip.missing.kryo.registrations':
-                result['default'] = false
-                break
-            case 'topology.fall.back.on.java.serialization':
-                result['default'] = true
-                break
-            case 'topology.debug':
-                result['default'] = false
                 break
             default:
                 throw new RuntimeException("Unknown default for boolean value: ${key}")
