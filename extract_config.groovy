@@ -35,6 +35,7 @@ class Param {
         case 'storm.local.mode.zmq': // ignored in distributed mode
         case 'storm.local.hostname': // makes no sense to set this service-wide
         case 'supervisor.enable': // only used by storm-core unit tests
+        case 'drpc.servers': // determined by service topology in CM (XXX not implemented)
         case 'dev.zookeeper.path': // only used in development
             return null
         }
