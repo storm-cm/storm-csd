@@ -52,10 +52,13 @@ function zookeeper_yaml {
 }
 
 function nimbus_yaml {
-    nimbus=$(cut -d : -f 1 < "$nimbus_list" | head -n 1)
-    if [[ -z $nimbus ]]; then
-        echo "Could not determine nimbus.host" >&2
-        return 1
+    local nimbus
+    while read line; do
+        if [[ -n $nimbus ]]; then
+            echo 'You have more than one Nimbus... this should not be possible!' >&2
+            return 1
+        fi
+        nimbus=$(cut -d : -f 1 < "$nimbus_list" | head -n 1)
     fi
     echo "nimbus.host: $nimbus"
 }
