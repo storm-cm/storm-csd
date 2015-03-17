@@ -18,9 +18,6 @@ function properties_yaml {
         local v="${BASH_REMATCH[2]}"
 
         case "$k" in
-        log_dir)
-            k=storm.log.dir
-            ;;
         supervisor.slots.ports)
             local ports=$(tr , ' ' <<< "$v")
             v=$'\n'

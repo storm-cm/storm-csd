@@ -69,7 +69,8 @@
             },
             "logging": {
                 "dir": "/var/log/storm",
-                "filename": "nimbus.log"
+                "filename": "nimbus.log",
+                "configName": "storm.log.dir"
             },
             "configWriter": {
                 "generators": [
@@ -113,6 +114,11 @@
                 "minInstances": 0,
                 "maxInstances": 1
             },
+            "logging": {
+                "dir": "/var/log/storm",
+                "filename": "nimbus.log",
+                "configName": "storm.log.dir"
+            },
             "configWriter": {
                 "generators": [
                     {
@@ -149,7 +155,9 @@
             },
             "logging": {
                 "dir": "/var/log/storm",
-                "filename": "supervisor.log"
+                "filename": "supervisor.log",
+                "configName": "storm.log.dir"
+
             },
             "configWriter": {
                 "generators": [
@@ -187,6 +195,11 @@
             },
             "topology": {
                 "minInstances": 0
+            },
+            "logging": {
+                "dir": "/var/log/storm",
+                "filename": "logviewer.log",
+                "configName": "storm.log.dir"
             },
             "configWriter": {
                 "generators": [
@@ -227,7 +240,8 @@
             },
             "logging": {
                 "dir": "/var/log/storm",
-                "filename": "drpc.log"
+                "filename": "drpc.log",
+                "configName": "storm.log.dir"
             },
             "configWriter": {
                 "generators": [
