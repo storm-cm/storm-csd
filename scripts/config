@@ -18,7 +18,7 @@ function properties_yaml {
 
         case "$k" in
         supervisor.slots.ports)
-            local ports=$(tr , ' ' <<< "$v")
+            local ports=$v
             v=$'\n'
             for port in $ports; do
                 v+=" - $port"$'\n'

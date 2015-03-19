@@ -67,6 +67,9 @@ class Param {
             result['type'] = 'double'
             break
         case 'ConfigValidation.IntegersValidator':
+            result['type'] = 'string_array'
+            result['separator'] = ' '
+            break
         case 'ConfigValidation.StringsValidator':
             result['type'] = 'string_array'
             break
