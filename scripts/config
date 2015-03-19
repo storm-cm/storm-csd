@@ -97,6 +97,10 @@ function to_yaml {
 
 # Operate idempotently
 if [[ -f "$stamp" ]]; then
+    if [[ ! -s "$target" ]]; then
+        echo "$stamp exists but $target is empty!" >&2
+        exit 1
+    fi
     exit 0
 fi
 
