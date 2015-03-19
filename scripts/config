@@ -2,33 +2,33 @@
 
 set -eux
 
+#exec >/tmp/fooooo 2>&1
+
 source=storm.properties
 target=storm.yaml
-orig=.storm.yaml.orig
-stamp=.stamp-config
 
 function properties_yaml {
     while read line; do
-        if [[ ! $line =~ ([a-z0-9._]+)=(.*) ]]; then
-            echo "Ignoring line: $line" >&2
-            continue
+        if [[ $line =~ ([a-z0-9._]+)=(.*) ]]; then
+            local k="${BASH_REMATCH[1]}"
+            local v="${BASH_REMATCH[2]}"
+
+            case "$k" in
+            supervisor.slots.ports)
+                local ports
+                read -a ports <<< "$v"
+                v=$'\n'
+                for port in "${ports[@]}"; do
+                    v+=" - $port"$'\n'
+                done
+                v=${v::-1} # remove trailing newline
+                ;;
+            esac
+
+            printf '%s: %s\n' "$k" "$v"
+        else
+            echo "$line"
         fi
-        local k="${BASH_REMATCH[1]}"
-        local v="${BASH_REMATCH[2]}"
-
-        case "$k" in
-        supervisor.slots.ports)
-            local ports
-            read -a ports <<< "$v"
-            v=$'\n'
-            for port in "${ports[@]}"; do
-                v+=" - $port"$'\n'
-            done
-            v=${v::-1} # remove trailing newline
-            ;;
-        esac
-
-        printf '%s: %s\n' "$k" "$v"
     done < "$source"
 }
 
@@ -95,21 +95,8 @@ function to_yaml {
     role_yaml drpc drpc.servers multi_opt
 }
 
-# Operate idempotently
-if [[ -f "$stamp" ]]; then
-    if [[ ! -s "$target" ]]; then
-        echo "$stamp exists but $target is empty!" >&2
-        exit 1
-    fi
-    exit 0
-fi
-
-mv "$target" "$orig"
 to_yaml > "$target"
-cat "$orig" >> "$target"
 
 printf $'#\n# storm.yaml follows:\n#\n'
 cat "$target"
 printf $'#\n#\n#\n'
-
-touch "$stamp"

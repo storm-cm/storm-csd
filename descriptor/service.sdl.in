@@ -47,9 +47,6 @@
             ],
             "auxConfigGenerators": [
                 {
-                    "filename": "storm-conf/storm.yaml"
-                },
-                {
                     "filename": "storm-conf/storm_env.ini",
                     "sourceFilename": "aux/storm_env.ini"
                 }
@@ -107,9 +104,6 @@
                 ],
                 "auxConfigGenerators": [
                     {
-                        "filename": "storm.yaml"
-                    },
-                    {
                         "filename": "storm_env.ini",
                         "sourceFilename": "aux/storm_env.ini"
                     }
@@ -160,9 +154,6 @@
                 ],
                 "auxConfigGenerators": [
                     {
-                        "filename": "storm.yaml"
-                    },
-                    {
                         "filename": "storm_env.ini",
                         "sourceFilename": "aux/storm_env.ini"
                     }
@@ -205,9 +196,6 @@
 
                 ],
                 "auxConfigGenerators": [
-                    {
-                        "filename": "storm.yaml"
-                    },
                     {
                         "filename": "storm_env.ini",
                         "sourceFilename": "aux/storm_env.ini"
@@ -254,9 +242,6 @@
                 ],
                 "auxConfigGenerators": [
                     {
-                        "filename": "storm.yaml"
-                    },
-                    {
                         "filename": "storm_env.ini",
                         "sourceFilename": "aux/storm_env.ini"
                     }
@@ -300,9 +285,6 @@
                     }
                 ],
                 "auxConfigGenerators": [
-                    {
-                        "filename": "storm.yaml"
-                    },
                     {
                         "filename": "storm_env.ini",
                         "sourceFilename": "aux/storm_env.ini"
