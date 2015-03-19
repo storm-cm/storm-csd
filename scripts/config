@@ -9,7 +9,9 @@ target=storm.yaml
 
 function properties_yaml {
     while read line; do
-        if [[ $line =~ ([a-z0-9._]+)=(.*) ]]; then
+        if [[ $line =~ ^_=(.*) ]]; then
+            echo "${BASH_REMATCH[1]}"
+        elif [[ $line =~ ^([a-z0-9._]+)=(.*) ]]; then
             local k="${BASH_REMATCH[1]}"
             local v="${BASH_REMATCH[2]}"
 
@@ -27,7 +29,8 @@ function properties_yaml {
 
             printf '%s: %s\n' "$k" "$v"
         else
-            echo "$line"
+            echo "Ignoring line: $line" >&2
+            return 1
         fi
     done < "$source"
 }
@@ -89,10 +92,10 @@ function role_yaml {
 }
 
 function to_yaml {
-    properties_yaml
     zookeeper_yaml
     role_yaml nimbus nimbus.host single
     role_yaml drpc drpc.servers multi_opt
+    properties_yaml
 }
 
 to_yaml > "$target"
